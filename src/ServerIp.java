@@ -40,6 +40,9 @@ public class ServerIp {
             String username_client = br.readLine();
             System.out.print("Enter password:");
             String password_client = br.readLine();
+
+
+
             ServerManager serverManager = new ServerManager();
             if (serverManager.isAuthServer(username_client, password_client)) {
                 System.out.println("Perfetto");

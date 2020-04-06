@@ -20,7 +20,12 @@ public class ServerThread extends Thread {
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
             String text = "";
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
+            System.out.println("Enter Username email istituzionale:");
+            String username_mail = br.readLine();
+            System.out.print("Enter password email istituzionale:");
+            String password_mail = br.readLine();
             do {
                 text = reader.readLine();
                 System.out.println(text);
@@ -37,7 +42,7 @@ public class ServerThread extends Thread {
                     System.out.println("Ingresso in metodo registrazione");
                     JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
                     System.out.println(playerInfo);
-                    writer.println(playerManager.registrazione(playerInfo) ? "registrato" : "no");
+                    writer.println(playerManager.registrazione(playerInfo, password_mail, username_mail) ? "registrato" : "no");
                     writer.flush();
                 }
                 if (text.equalsIgnoreCase("create_match")) {

@@ -90,7 +90,7 @@ public class PlayerManager {
         return hasAuth;
     }
 
-    public boolean registrazione(JsonObject playerInfo) {
+    public boolean registrazione(JsonObject playerInfo, String password_email, String username_email) {
         boolean hasAuth = false;
         if (!hasPlayer(playerInfo.get("nickname").getAsString(), playerInfo.get("email").getAsString())) {
             String query = "insert into public.\"players\" (cognome, email, nickname, nome, password, codice_auth) values ('" + playerInfo.get("cognome").getAsString() + "','" + playerInfo.get("email").getAsString()
@@ -98,7 +98,7 @@ public class PlayerManager {
             try {
                 sqlDriver.executeBooleanQuery(query);
                 EmailManager emailManager = new EmailManager();
-                emailManager.createMail(playerInfo, "-Juve2612-", "lgmarazzi@studenti.uninsubria.it");
+                emailManager.createMail(playerInfo, password_email, username_email);
                 hasAuth = true;
             } catch (Exception e) {
                 hasAuth = false;
