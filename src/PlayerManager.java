@@ -13,7 +13,7 @@ public class PlayerManager {
     SqlDriver sqlDriver = new SqlDriver();
 
     public boolean login(String username, String password) {
-        String query = "select * from public.\"players\" where username = '" + username.trim() + "' and password = '" + password.trim() + "'";
+        String query = "select * from public.\"players\" where nickname = '" + username.trim() + "' and password = '" + password.trim() + "'";
         boolean isAuth = false;
         try {
            JsonObject infoQueryPlayer = new JsonObject();

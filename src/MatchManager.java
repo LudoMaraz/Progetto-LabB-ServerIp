@@ -1,3 +1,4 @@
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
@@ -14,8 +15,8 @@ public class MatchManager {
     }
 
     public boolean createMatch(JsonObject infoPartita) {
-        String query = "insert into public.\"games\" (id_partita, num_giocatori, nome, player1) values ('" + infoPartita.get("id_partita").getAsString() + "','" + infoPartita.get("num_player").getAsInt() + "','" +
-                infoPartita.get("nome").getAsString() + "','" + infoPartita.get("player1").getAsString() + "')";
+        String query = "insert into public.\"games\" (id_partita, num_giocatori, nome, player1, num_giocatori_iscritti, isOpenGame) values ('" + infoPartita.get("id_partita").getAsString() + "','" + infoPartita.get("num_player").getAsInt() + "','" +
+                infoPartita.get("nome").getAsString() + "','" + infoPartita.get("player1").getAsString()+ "','1"  + "','true')";
         boolean response = false;
         try {
             response = sqlDriver.executeBooleanQuery(query);
@@ -25,46 +26,53 @@ public class MatchManager {
         return response;
     }
 
-    public JsonObject visualizzaListaMatch(){
+    public JsonArray visualizzaListaMatch() {
         String query = "select * from public.\"games\"";
         JsonObject infoDataReturn = new JsonObject();
-        JsonObject response = new JsonObject();
-        try{
+        JsonArray response = new JsonArray();
+        try {
             infoDataReturn.addProperty("id_partita", "String");
-            infoDataReturn.addProperty("num_player", "int");
-            response = sqlDriver.executeInfoQuery(query, infoDataReturn);
-        } catch(Exception e){
+            infoDataReturn.addProperty("num_giocatori", "int");
+            infoDataReturn.addProperty("num_giocatori_iscritti", "int");
+            infoDataReturn.addProperty("nome", "String");
+            response = sqlDriver.executeMultiInfoQuery(query, infoDataReturn);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return response;
     }
 
-    public boolean partecipaMatch(JsonObject infoPartita){
-        String query = "select " + infoPartita.get("id_partita").getAsString() + "from public.\"games\" where " + infoPartita.get("num_giocatori_iscritti").getAsInt() + "< " + infoPartita.get("num_giocatori").getAsInt();
+    public boolean partecipaMatch(JsonObject infoPartita) {
+        String query = "select * from public.\"games\" where id_partita ='" + infoPartita.get("id_partita").getAsString() + "' AND is_open_game = true";
         JsonObject infoDataReturn = new JsonObject();
-        JsonObject response = new JsonObject();
-        try{
+        boolean response = false;
+        String idPlayer = infoPartita.get("id_player").getAsString();
+        try {
             infoDataReturn.addProperty("id_partita", "String");
-            response = sqlDriver.executeInfoQuery(query, infoDataReturn);
-        } catch(Exception e){
+            infoDataReturn.addProperty("num_giocatori", "int");
+            infoDataReturn.addProperty("num_giocatori_iscritti", "int");
+
+            infoPartita = sqlDriver.executeInfoQuery(query, infoDataReturn);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return response;
-
-        if(infoPartita.get("isOpenGame").getAsBoolean() == true) {
-            String query2 = "update " + infoPartita.get("num_giocatori_iscritti").getAsInt() + "from \"games\"";
-            boolean response2 = false;
+        int num_giocatori_iscritti = infoPartita.get("num_giocatori_iscritti").getAsInt();
+        if (infoPartita.get("num_giocatori").getAsInt() > num_giocatori_iscritti) {
+            query = "update public.\"games\" set player" + infoPartita.get("num_giocatori_iscritti").getAsString() + " = '" + idPlayer + "', num_giocatori_iscritti = " + (num_giocatori_iscritti + 1) + "where id_partita ='" + infoPartita.get("id_partita").getAsString() + "'";
             try {
-                response2 = sqlDriver.executeBooleanQuery(query2);
+                response = sqlDriver.executeBooleanQuery(query);
             } catch (Exception e) {
+                writer.println("Si è verificato un errore nella registrazione alla partita");
+                writer.flush();
                 e.printStackTrace();
+                return false;
             }
-            return response2;
+
 
         } else {
             writer.println("Le iscrizioni alla partita sono chiuse");
             writer.flush();
         }
-
+        return response;
     }
 }
