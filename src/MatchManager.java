@@ -26,7 +26,7 @@ public class MatchManager {
     }
 
     public JsonObject visualizzaListaMatch(){
-        String query = "select from public.\"games\"";
+        String query = "select * from public.\"games\"";
         JsonObject infoDataReturn = new JsonObject();
         JsonObject response = new JsonObject();
         try{
@@ -39,17 +39,32 @@ public class MatchManager {
         return response;
     }
 
-    public boolean partecipaMatch(){
-        String query = "select from public.\"games\"";
-        boolean response = false;
+    public boolean partecipaMatch(JsonObject infoPartita){
+        String query = "select " + infoPartita.get("id_partita").getAsString() + "from public.\"games\" where " + infoPartita.get("num_giocatori_iscritti").getAsInt() + "< " + infoPartita.get("num_giocatori").getAsInt();
+        JsonObject infoDataReturn = new JsonObject();
+        JsonObject response = new JsonObject();
         try{
-            response = sqlDriver.executeBooleanQuery(query);
-
+            infoDataReturn.addProperty("id_partita", "String");
+            response = sqlDriver.executeInfoQuery(query, infoDataReturn);
         } catch(Exception e){
             e.printStackTrace();
         }
         return response;
+
+        if(infoPartita.get("isOpenGame").getAsBoolean() == true) {
+            String query2 = "update " + infoPartita.get("num_giocatori_iscritti").getAsInt() + "from \"games\"";
+            boolean response2 = false;
+            try {
+                response2 = sqlDriver.executeBooleanQuery(query2);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response2;
+
+        } else {
+            writer.println("Le iscrizioni alla partita sono chiuse");
+            writer.flush();
+        }
+
     }
-
-
 }
