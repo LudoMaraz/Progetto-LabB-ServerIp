@@ -66,6 +66,7 @@ public class SqlDriver {
         return response;
     }
 
+
     public boolean executeBooleanQuery(String query) {
         Connection con = connect();
         Statement stmt = null;
