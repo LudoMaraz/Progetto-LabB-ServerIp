@@ -24,4 +24,32 @@ public class MatchManager {
         }
         return response;
     }
+
+    public JsonObject visualizzaListaMatch(){
+        String query = "select from public.\"games\"";
+        JsonObject infoDataReturn = new JsonObject();
+        JsonObject response = new JsonObject();
+        try{
+            infoDataReturn.addProperty("id_partita", "String");
+            infoDataReturn.addProperty("num_player", "int");
+            response = sqlDriver.executeInfoQuery(query, infoDataReturn);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public boolean partecipaMatch(){
+        String query = "select from public.\"games\"";
+        boolean response = false;
+        try{
+            response = sqlDriver.executeBooleanQuery(query);
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+
 }

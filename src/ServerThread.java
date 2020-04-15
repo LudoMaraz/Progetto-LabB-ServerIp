@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 
 import java.io.*;
 import java.net.Socket;
@@ -51,6 +52,17 @@ public class ServerThread extends Thread {
                     writer.println(matchManager.createMatch(infoMatch) ? "ok_match_create" : "no");
                     writer.flush();
                 }
+                if(text.equalsIgnoreCase("visualizza_lista_match")){
+                    MatchManager matchManager = new MatchManager(reader, writer);
+                    writer.println(matchManager.visualizzaListaMatch());
+                    writer.flush();
+                }
+                if(text.equalsIgnoreCase("partecipa_match")){
+                    MatchManager matchManager = new MatchManager(reader, writer);
+                    writer.println(matchManager.partecipaMatch());
+                    writer.flush();
+                }
+
             } while (!text.equals("bye"));
 
             socket.close();
