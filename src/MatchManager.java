@@ -65,6 +65,7 @@ public class MatchManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         int num_giocatori_iscritti = infoPartita.get("num_giocatori_iscritti").getAsInt();
 
         if (infoPartita.get("num_giocatori").getAsInt() > num_giocatori_iscritti) {
