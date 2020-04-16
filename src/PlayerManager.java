@@ -98,7 +98,7 @@ public class PlayerManager {
             try {
                 sqlDriver.executeBooleanQuery(query);
                 EmailManager emailManager = new EmailManager();
-                emailManager.createMail(playerInfo, password_email, "lgmarazzi@studenti.uninsubria.it");
+                emailManager.createMail(playerInfo, password_email, username_email);
                 hasAuth = true;
             } catch (Exception e) {
                 hasAuth = false;

@@ -14,7 +14,7 @@ public class EmailManager {
             String password = password_user;
             String username = username_user;
             String subject = "CODICE DI CONFERMA REGISTRAZIONE";
-            String to = "marazziludovico@gmail.com";
+            String to = infoMail.get("email").getAsString();
             String body = "Ciao " + infoMail.get("nome").getAsString() + ",<br/> la tua registrazione è quasi completata, esegui la login e inserisci questo codice: <br/> <p style=\"color=red;\">" + infoMail.get("codice_auth").getAsString() + "</p>";
 
             final JTextField uf = new JTextField(username);

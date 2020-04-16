@@ -11,18 +11,22 @@ public class ServerIp {
         if (args.length < 1) return;
 
         int port = Integer.parseInt(args[0]);
-
-        if (isAuthToConnectServer()) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        if (isAuthToConnectServer(br)) {
 
             try (ServerSocket serverSocket = new ServerSocket(port)) {
 
                 System.out.println("Server is listening on port " + port);
+                System.out.println("inserisci email dominio istituzionale:");
+                String username_mail = br.readLine();
+                System.out.println("inserisci password dominio istituzionale:");
+                String password_mail = br.readLine();
 
                 while (true) {
                     Socket socket = serverSocket.accept();
                     System.out.println("New client connected");
 
-                    new ServerThread(socket).start();
+                    new ServerThread(socket, username_mail, password_mail).start();
                 }
 
             } catch (IOException ex) {
@@ -32,10 +36,10 @@ public class ServerIp {
         }
     }
 
-    private static boolean isAuthToConnectServer() {
+    private static boolean isAuthToConnectServer(BufferedReader br) {
         boolean isAuth = false;
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Enter Username:");
             String username_client = br.readLine();
             System.out.print("Enter password:");

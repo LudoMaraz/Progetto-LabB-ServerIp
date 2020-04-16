@@ -7,9 +7,13 @@ import java.net.Socket;
 
 public class ServerThread extends Thread {
     private Socket socket;
+    private String username_mail;
+    private String password_mail;
 
-    public ServerThread(Socket socket) {
+    public ServerThread(Socket socket, String username_insubria, String password_insubria) {
         this.socket = socket;
+        this.username_mail = username_insubria;
+        this.password_mail = password_insubria;
     }
 
     public void run() {
@@ -22,6 +26,7 @@ public class ServerThread extends Thread {
             PrintWriter writer = new PrintWriter(output, true);
             String text = "";
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
 
             do {
                 text = reader.readLine();
@@ -39,7 +44,7 @@ public class ServerThread extends Thread {
                     System.out.println("Ingresso in metodo registrazione");
                     JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
                     System.out.println(playerInfo);
-                    //writer.println(playerManager.registrazione(playerInfo, password_mail, username_mail) ? "registrato" : "no");
+                    writer.println(playerManager.registrazione(playerInfo, password_mail, username_mail) ? "registrato" : "no");
                     writer.flush();
                 }
                 if (text.equalsIgnoreCase("create_match")) {
