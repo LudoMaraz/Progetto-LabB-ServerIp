@@ -15,11 +15,20 @@ public class MatchManager {
     }
 
     public boolean createMatch(JsonObject infoPartita) {
-        String query = "insert into public.\"games\" (id_partita, num_giocatori, nome, player1, num_giocatori_iscritti, isOpenGame) values ('" + infoPartita.get("id_partita").getAsString() + "','" + infoPartita.get("num_player").getAsInt() + "','" +
-                infoPartita.get("nome").getAsString() + "','" + infoPartita.get("player1").getAsString()+ "','1"  + "','true')";
+        String query = "insert into public.\"games\" (id_partita, num_giocatori, nome, num_giocatori_iscritti, is_open_game) values ('" + infoPartita.get("id_partita").getAsString() + "','" + infoPartita.get("num_player").getAsInt() + "','" +
+                infoPartita.get("nome").getAsString() + "','1" + "','true')";
         boolean response = false;
         try {
             response = sqlDriver.executeBooleanQuery(query);
+            if (response == true) {
+                query = "create table public.\"" + infoPartita.get("id_partita").getAsString() + "\" (nickname varchar primary key, punteggio_totale int, punteggio_parziale int, num_manche int)";
+                response = sqlDriver.executeBooleanQuery(query);
+                if (response == true) {
+                    query = "insert into public.\"" + infoPartita.get("id_partita").getAsString() + "\"(nickname, punteggio_totale, punteggio_parziale, num_manche) values ('" + infoPartita.get("player1").getAsString() + "', 0, 0, 1)";
+                    response = sqlDriver.executeBooleanQuery(query);
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,17 +66,21 @@ public class MatchManager {
             e.printStackTrace();
         }
         int num_giocatori_iscritti = infoPartita.get("num_giocatori_iscritti").getAsInt();
+
         if (infoPartita.get("num_giocatori").getAsInt() > num_giocatori_iscritti) {
-            query = "update public.\"games\" set player" + infoPartita.get("num_giocatori_iscritti").getAsString() + " = '" + idPlayer + "', num_giocatori_iscritti = " + (num_giocatori_iscritti + 1) + "where id_partita ='" + infoPartita.get("id_partita").getAsString() + "'";
+            query = "update public.\"games\" set num_giocatori_iscritti = " + (num_giocatori_iscritti + 1) + "where id_partita ='" + infoPartita.get("id_partita").getAsString() + "'";
             try {
                 response = sqlDriver.executeBooleanQuery(query);
+                if (response == true) {
+                    query = "insert into public.\"" + infoPartita.get("id_partita").getAsString() + "\"(nickname, punteggio_totale, punteggio_parziale, num_manche) values ('" + idPlayer + "', 0, 0, 1)";
+                    response = sqlDriver.executeBooleanQuery(query);
+                }
             } catch (Exception e) {
                 writer.println("Si è verificato un errore nella registrazione alla partita");
                 writer.flush();
                 e.printStackTrace();
                 return false;
             }
-
 
         } else {
             writer.println("Le iscrizioni alla partita sono chiuse");
