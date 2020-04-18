@@ -64,6 +64,12 @@ public class ServerThread extends Thread {
                     writer.println(matchManager.partecipaMatch(infoMatch) ? "ok_partecipazione_accettata" : "no");
                     writer.flush();
                 }
+                if(text.equalsIgnoreCase("leave_match")){
+                    JsonObject infoMatch = gson.fromJson(reader.readLine(), JsonObject.class);
+                    MatchManager matchManager = new MatchManager(reader, writer);
+                    writer.println(matchManager.leaveMatch(infoMatch) ? "ok_match_left" : "no");
+                    writer.flush();
+                }
 
             } while (!text.equals("bye"));
 
