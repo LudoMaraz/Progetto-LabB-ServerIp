@@ -98,7 +98,9 @@ public class PlayerManager {
             try {
                 sqlDriver.executeBooleanQuery(query);
                 EmailManager emailManager = new EmailManager();
-                emailManager.createMail(playerInfo, password_email, username_email);
+                String subject = "CODICE DI CONFERMA REGISTRAZIONE";
+                String body = "Ciao " + playerInfo.get("nome").getAsString() + ",<br/> la tua registrazione è quasi completata, esegui la login e inserisci questo codice: <br/> <p style=\"color=red;\">" + playerInfo.get("codice_auth").getAsString() + "</p>";
+                emailManager.createMail(playerInfo, password_email, username_email, body, subject);
                 hasAuth = true;
             } catch (Exception e) {
                 hasAuth = false;
