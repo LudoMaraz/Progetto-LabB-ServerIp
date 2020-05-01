@@ -77,13 +77,11 @@ public class ServerThread extends Thread {
                     writer.println(playerManager.modifyProfile(playerInfo) ? "ok_dati_modificati" : "no");
                     writer.flush();
                 }
-                if(text.equalsIgnoreCase("reset_psw")){
+                if(text.trim().equalsIgnoreCase("reset_psw")){
                     PlayerManager playerManager = new PlayerManager(reader,writer);
-                    System.out.println("Ingresso nel metodo reset psw");
                     JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
                     System.out.println(playerInfo);
-                    System.out.println("modify psw method");
-                    writer.println(playerManager.resetPsw(playerInfo) ? "ok_reset_psw_effettuato" : "no");
+                    writer.println(playerManager.resetPsw(playerInfo, username_mail, password_mail) ? "ok_reset_psw_effettuato" : "no");
                     writer.flush();
                 }
 

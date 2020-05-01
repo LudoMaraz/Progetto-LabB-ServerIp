@@ -1,4 +1,5 @@
 import com.google.gson.JsonObject;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -100,7 +101,7 @@ public class PlayerManager {
                 EmailManager emailManager = new EmailManager();
                 String subject = "CODICE DI CONFERMA REGISTRAZIONE";
                 String body = "Ciao " + playerInfo.get("nome").getAsString() + ",<br/> la tua registrazione è quasi completata, esegui la login e inserisci questo codice: <br/> <p style=\"color=red;\">" + playerInfo.get("codice_auth").getAsString() + "</p>";
-                emailManager.createMail(playerInfo, password_email, username_email, body, subject);
+                emailManager.createMail(playerInfo, password_email, username_email, subject, body);
                 hasAuth = true;
             } catch (Exception e) {
                 hasAuth = false;
@@ -127,13 +128,20 @@ public class PlayerManager {
         return true;
     }
 
-    public boolean resetPsw(JsonObject playerInfo){
-        String username_email = "";
-
+    public boolean resetPsw(JsonObject playerInfo, String username_email, String password_email){
+        System.out.print("Inizio metodo reset psw");
+        boolean response = false;
         try{
+            System.out.print("Inizio try");
             EmailManager emailManager = new EmailManager();
+            String nuovaPassword = emailManager.getTempPsw();
             //mettere psw temporanea nella mail da inviare
-            emailManager.createMail(playerInfo, emailManager.getTempPsw(), username_email);
+            String subject = "NUOVA PASSWORD";
+            String body = "Ciao " + playerInfo.get("nome").getAsString() + ",<br/> il tuo reset della password è stato completato, esegui la login e inserisci questa nuova password: <br/> <p style=\"color=red;\">" + nuovaPassword + "</p>";
+            emailManager.createMail(playerInfo, password_email, username_email, subject, body);
+            System.out.print("create email");
+            String query = "update public.\"players\" set password = '" + nuovaPassword + "' where email = '" +playerInfo.get("email").getAsString() + "'";
+            response = sqlDriver.executeBooleanQuery(query);
             writer.println("La mail è stata inviata correttamente");
             writer.flush();
 
@@ -143,7 +151,7 @@ public class PlayerManager {
             e.printStackTrace();
         }
 
-        return;
+        return response;
     }
 
     public PlayerManager(BufferedReader reader, PrintWriter writer) {
