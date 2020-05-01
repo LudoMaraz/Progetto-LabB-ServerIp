@@ -8,7 +8,7 @@ public class SqlDriver {
 
     private final String url = "jdbc:postgresql://localhost/LaboratorioB";
     private final String user = "postgres";
-    private final String password = "LaboratorioB";
+    private final String password = "qwerty";
 
     public Connection connect() {
 

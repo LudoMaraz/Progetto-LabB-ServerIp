@@ -94,7 +94,7 @@ public class MatchManager {
         JsonObject infoDataReturn = new JsonObject();
         boolean response = false;
         try{
-            if (infoPartita.get("is_open_game").getAsBoolean() == true ){
+            if (infoPartita.get("is_open_game").getAsBoolean() == true){
                 String query ="delete from public.\"" + infoPartita.get("id_partita").getAsString()+"\" where nickname = '" +infoPartita.get("id_giocatore").getAsString() +"'";
                 infoDataReturn.addProperty("id_partita", "String");
                 response = sqlDriver.executeBooleanQuery(query);

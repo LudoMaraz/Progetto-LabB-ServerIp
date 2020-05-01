@@ -70,6 +70,22 @@ public class ServerThread extends Thread {
                     writer.println(matchManager.leaveMatch(infoMatch) ? "ok_match_left" : "no");
                     writer.flush();
                 }
+                if(text.equalsIgnoreCase("modify_data")){
+                    PlayerManager playerManager = new PlayerManager(reader,writer);
+                    JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
+                    System.out.println(playerInfo);
+                    writer.println(playerManager.modifyProfile(playerInfo) ? "ok_dati_modificati" : "no");
+                    writer.flush();
+                }
+                if(text.equalsIgnoreCase("reset_psw")){
+                    PlayerManager playerManager = new PlayerManager(reader,writer);
+                    System.out.println("Ingresso nel metodo reset psw");
+                    JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
+                    System.out.println(playerInfo);
+                    System.out.println("modify psw method");
+                    writer.println(playerManager.resetPsw(playerInfo) ? "ok_reset_psw_effettuato" : "no");
+                    writer.flush();
+                }
 
             } while (!text.equals("bye"));
 

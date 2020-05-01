@@ -5,6 +5,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.*;
 import java.util.Properties;
+import java.util.Random;
 
 public class EmailManager {
 
@@ -81,4 +82,20 @@ public class EmailManager {
             e.printStackTrace();
         }
     }
+
+    public String getTempPsw(){
+        String elencoCaratteri = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!?";
+        StringBuilder tmpString = new StringBuilder();
+        String risTmpString = "";
+        Random rnd = new Random();
+        while (tmpString.length() < 18) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * elencoCaratteri.length());
+            tmpString.append(elencoCaratteri.charAt(index));
+        }
+        risTmpString = tmpString.toString();
+
+        return risTmpString;
+    }
+
+
 }

@@ -110,6 +110,40 @@ public class PlayerManager {
         return hasAuth;
     }
 
+    public boolean modifyProfile(JsonObject playerInfo){
+
+        try{
+            String query = "update public.\"players\" set nome = '" + playerInfo.get("nome").getAsString() + "' , cognome = '" +playerInfo.get("cognome").getAsString() + "' , nickname = '" +playerInfo.get("nickname").getAsString() + "' , password = '" +playerInfo.get("password").getAsString()+ "' where email = '" +playerInfo.get("email").getAsString() + "'";
+            query += "where email = '" +playerInfo.get("email").getAsString() + "'";
+            sqlDriver.executeBooleanQuery(query);
+
+        }catch (Exception e){
+            writer.println("La modifica dei dati ha riscontrato un ERRORE");
+            writer.flush();
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean resetPsw(JsonObject playerInfo){
+        String username_email = "";
+
+        try{
+            EmailManager emailManager = new EmailManager();
+            //mettere psw temporanea nella mail da inviare
+            emailManager.createMail(playerInfo, emailManager.getTempPsw(), username_email);
+            writer.println("La mail è stata inviata correttamente");
+            writer.flush();
+
+        } catch (Exception e){
+            writer.println("Il reset della password ha riscontrato un ERRORE");
+            writer.flush();
+            e.printStackTrace();
+        }
+
+        return;
+    }
+
     public PlayerManager(BufferedReader reader, PrintWriter writer) {
         this.reader = reader;
         this.writer = writer;
