@@ -88,4 +88,40 @@ public class MatchManager {
         }
         return response;
     }
+
+    public boolean leaveMatch(JsonObject infoPartita){
+
+        JsonObject infoDataReturn = new JsonObject();
+        boolean response = false;
+        try{
+            if (infoPartita.get("is_open_game").getAsBoolean() == true ){
+                String query ="delete from public.\"" + infoPartita.get("id_partita").getAsString()+"\" where nickname = '" +infoPartita.get("id_giocatore").getAsString() +"'";
+                infoDataReturn.addProperty("id_partita", "String");
+                response = sqlDriver.executeBooleanQuery(query);
+                int num_giocatori_iscritti = infoPartita.get("num_giocatori_iscritti").getAsInt();
+                if (response == true){
+                    query = "update public.\"games\" set num_giocatori_iscritti = " + (num_giocatori_iscritti - 1) + "where id_partita ='" + infoPartita.get("id_partita").getAsString() + "'";
+                    response = sqlDriver.executeBooleanQuery(query);
+                }
+                else {
+                    writer.println("Si è verificato un errore nell'abbandono della partita");
+                    writer.flush();
+                }
+        } else {
+                String query ="drop table public.\""+ infoPartita.get("id_partita").getAsString()+"\"";
+                response = sqlDriver.executeBooleanQuery(query);
+                if (response == true){
+                    query = "delete from public.\"games\" where id_partita =  '" + infoPartita.get("id_partita").getAsString() + "'";
+                    response = sqlDriver.executeBooleanQuery(query);
+                }
+            }
+        } catch (Exception e){
+            writer.println("Si è verificato un errore nell'abbandono della partita");
+            writer.flush();
+            e.printStackTrace();
+        }
+
+        return response;
+
+    }
 }
