@@ -31,60 +31,62 @@ public class ServerThread extends Thread {
             do {
                 text = reader.readLine();
                 System.out.println(text);
-                if(text.equalsIgnoreCase("login")) {
-                    System.out.println("Ingresso in metodo login");
-                    PlayerManager playerManager = new PlayerManager(reader, writer);
-                    JsonObject credenziali = gson.fromJson(reader.readLine(), JsonObject.class);
-                    writer.println(playerManager.login(credenziali.get("username").getAsString(), credenziali.get("password").getAsString()) ? "autorizzato" : "no");
-                    writer.flush();
-                    writer.println(playerManager.getInfoPlayer(credenziali.get("username").getAsString()));
-                    writer.flush();
-                } else if (text.equalsIgnoreCase("registrazione")) {
-                    PlayerManager playerManager = new PlayerManager(reader, writer);
-                    System.out.println("Ingresso in metodo registrazione");
-                    JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
-                    System.out.println(playerInfo);
-                    writer.println(playerManager.registrazione(playerInfo, password_mail, username_mail) ? "registrato" : "no");
-                    writer.flush();
+                if (text != null) {
+                    if (text.equalsIgnoreCase("login")) {
+                        System.out.println("Ingresso in metodo login");
+                        PlayerManager playerManager = new PlayerManager(reader, writer);
+                        JsonObject credenziali = gson.fromJson(reader.readLine(), JsonObject.class);
+                        writer.println(playerManager.login(credenziali.get("username").getAsString(), credenziali.get("password").getAsString()) ? "autorizzato" : "no");
+                        writer.flush();
+                        writer.println(playerManager.getInfoPlayer(credenziali.get("username").getAsString()));
+                        writer.flush();
+                    }
+                    if (text.equalsIgnoreCase("registrazione")) {
+                        PlayerManager playerManager = new PlayerManager(reader, writer);
+                        System.out.println("Ingresso in metodo registrazione");
+                        JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
+                        System.out.println(playerInfo);
+                        writer.println(playerManager.registrazione(playerInfo, password_mail, username_mail) ? "registrato" : "no");
+                        writer.flush();
+                    }
+                    if (text.equalsIgnoreCase("create_match")) {
+                        JsonObject infoMatch = gson.fromJson(reader.readLine(), JsonObject.class);
+                        MatchManager matchManager = new MatchManager(reader, writer);
+                        writer.println(matchManager.createMatch(infoMatch) ? "ok_match_create" : "no");
+                        writer.flush();
+                    }
+                    if (text.equalsIgnoreCase("visualizza_lista_match")) {
+                        MatchManager matchManager = new MatchManager(reader, writer);
+                        writer.println(matchManager.visualizzaListaMatch());
+                        writer.flush();
+                    }
+                    if (text.equalsIgnoreCase("partecipa_match")) {
+                        JsonObject infoMatch = gson.fromJson(reader.readLine(), JsonObject.class);
+                        MatchManager matchManager = new MatchManager(reader, writer);
+                        writer.println(matchManager.partecipaMatch(infoMatch) ? "ok_partecipazione_accettata" : "no");
+                        writer.flush();
+                    }
+                    if (text.equalsIgnoreCase("leave_match")) {
+                        JsonObject infoMatch = gson.fromJson(reader.readLine(), JsonObject.class);
+                        MatchManager matchManager = new MatchManager(reader, writer);
+                        writer.println(matchManager.leaveMatch(infoMatch) ? "ok_match_left" : "no");
+                        writer.flush();
+                    }
+                    if (text.equalsIgnoreCase("modify_data")) {
+                        PlayerManager playerManager = new PlayerManager(reader, writer);
+                        JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
+                        System.out.println(playerInfo);
+                        writer.println(playerManager.modifyProfile(playerInfo) ? "ok_dati_modificati" : "no");
+                        writer.flush();
+                    }
+                    if (text.equalsIgnoreCase("reset_psw")) {
+                        PlayerManager playerManager = new PlayerManager(reader, writer);
+                        JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
+                        System.out.println(playerInfo);
+                        writer.println(playerManager.resetPsw(playerInfo, username_mail, password_mail) ? "ok_reset_psw_effettuato" : "no");
+                        writer.flush();
+                    }
                 }
-                if (text.equalsIgnoreCase("create_match")) {
-                    JsonObject infoMatch = gson.fromJson(reader.readLine(), JsonObject.class);
-                    MatchManager matchManager = new MatchManager(reader, writer);
-                    writer.println(matchManager.createMatch(infoMatch) ? "ok_match_create" : "no");
-                    writer.flush();
-                }
-                if(text.equalsIgnoreCase("visualizza_lista_match")){
-                    MatchManager matchManager = new MatchManager(reader, writer);
-                    writer.println(matchManager.visualizzaListaMatch());
-                    writer.flush();
-                }
-                if(text.equalsIgnoreCase("partecipa_match")){
-                    JsonObject infoMatch = gson.fromJson(reader.readLine(), JsonObject.class);
-                    MatchManager matchManager = new MatchManager(reader, writer);
-                    writer.println(matchManager.partecipaMatch(infoMatch) ? "ok_partecipazione_accettata" : "no");
-                    writer.flush();
-                }
-                if(text.equalsIgnoreCase("leave_match")){
-                    JsonObject infoMatch = gson.fromJson(reader.readLine(), JsonObject.class);
-                    MatchManager matchManager = new MatchManager(reader, writer);
-                    writer.println(matchManager.leaveMatch(infoMatch) ? "ok_match_left" : "no");
-                    writer.flush();
-                }
-                if(text.equalsIgnoreCase("modify_data")){
-                    PlayerManager playerManager = new PlayerManager(reader,writer);
-                    JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
-                    System.out.println(playerInfo);
-                    writer.println(playerManager.modifyProfile(playerInfo) ? "ok_dati_modificati" : "no");
-                    writer.flush();
-                }
-                if(text.trim().equalsIgnoreCase("reset_psw")){
-                    PlayerManager playerManager = new PlayerManager(reader,writer);
-                    JsonObject playerInfo = gson.fromJson(reader.readLine(), JsonObject.class);
-                    System.out.println(playerInfo);
-                    writer.println(playerManager.resetPsw(playerInfo, username_mail, password_mail) ? "ok_reset_psw_effettuato" : "no");
-                    writer.flush();
-                }
-
             } while (!text.equals("bye"));
 
             socket.close();

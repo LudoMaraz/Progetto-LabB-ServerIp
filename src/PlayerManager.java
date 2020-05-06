@@ -2,10 +2,8 @@ import com.google.gson.JsonObject;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.time.Instant;
-import java.util.HashMap;
 
 public class PlayerManager {
 
@@ -139,7 +137,6 @@ public class PlayerManager {
             String subject = "NUOVA PASSWORD";
             String body = "Ciao " + playerInfo.get("nome").getAsString() + ",<br/> il tuo reset della password è stato completato, esegui la login e inserisci questa nuova password: <br/> <p style=\"color=red;\">" + nuovaPassword + "</p>";
             emailManager.createMail(playerInfo, password_email, username_email, subject, body);
-            System.out.print("create email");
             String query = "update public.\"players\" set password = '" + nuovaPassword + "' where email = '" +playerInfo.get("email").getAsString() + "'";
             response = sqlDriver.executeBooleanQuery(query);
             writer.println("La mail è stata inviata correttamente");

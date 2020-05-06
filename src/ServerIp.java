@@ -14,6 +14,8 @@ public class ServerIp {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         if (isAuthToConnectServer(br)) {
 
+            DiceList diceList = new DiceList();
+
             try (ServerSocket serverSocket = new ServerSocket(port)) {
 
                 System.out.println("Server is listening on port " + port);
